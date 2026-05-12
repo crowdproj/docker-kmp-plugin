@@ -1,0 +1,22 @@
+[versions]
+crowdproj-docker = "0.1.0"
+kotlin = "2.3.20"
+kotlinx-serialization = "1.8.0"
+shadow = "9.4.1"
+publish = "2.0.0"
+dokka = "2.2.0"
+jvm-toolchain = "21"
+testcontainers = "2.0.5"
+
+[libraries]
+shadow-gradle-plugin = { module = "com.gradleup.shadow:shadow-gradle-plugin", version.ref = "shadow" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+publish = { id = "com.gradle.plugin-publish", version.ref = "publish" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+dokka-javadoc = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
