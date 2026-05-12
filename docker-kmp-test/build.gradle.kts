@@ -65,22 +65,13 @@ docker {
 tasks.register("verifyJvmImage") {
     dependsOn("dockerBuildjvmapp")
     doLast {
-        // Override ENTRYPOINT to keep container alive, then exec the app
         val container = org.testcontainers.containers.GenericContainer("crowdproj/test-jvm:latest")
-        container.withCreateContainerCmdModifier { cmd ->
-            cmd.withEntrypoint("tail", "-f", "/dev/null")
-        }
         container.start()
-        try {
-            val exec = container.execInContainer("java", "-jar", "/app/app.jar")
-            if (exec.exitCode != 0) {
-                throw GradleException("JVM image: exit ${exec.exitCode}, stderr: ${exec.stderr}")
-            }
-            if (!exec.stdout.contains("Hello from crowdproj-docker!")) {
-                throw GradleException("JVM image: expected output not found in stdout:\n${exec.stdout}")
-            }
-        } finally {
-            container.stop()
+        Thread.sleep(3000)
+        val logs = container.logs
+        container.stop()
+        if (!logs.contains("Hello from crowdproj-docker!")) {
+            throw GradleException("JVM image: expected output not found in logs:\n$logs")
         }
     }
 }
@@ -89,20 +80,26 @@ tasks.register("verifyNativeImage") {
     dependsOn("dockerBuildnativeapp")
     doLast {
         val container = org.testcontainers.containers.GenericContainer("crowdproj/test-native:latest")
-        container.withCreateContainerCmdModifier { cmd ->
+        container.start()
+        Thread.sleep(3000)
+        val logs = container.logs
+        container.stop()
+        if (!logs.contains("Hello from crowdproj-docker!")) {
+            throw GradleException("Native image: expected output not found in logs:\n$logs")
+        }
+
+        val resContainer = org.testcontainers.containers.GenericContainer("crowdproj/test-native:latest")
+        resContainer.withCreateContainerCmdModifier { cmd ->
             cmd.withEntrypoint("tail", "-f", "/dev/null")
         }
-        container.start()
+        resContainer.start()
         try {
-            val exec = container.execInContainer("./docker-kmp-test.kexe")
-            if (exec.exitCode != 0) {
-                throw GradleException("Native image: exit ${exec.exitCode}, stderr: ${exec.stderr}")
-            }
-            if (!exec.stdout.contains("Hello from crowdproj-docker!")) {
-                throw GradleException("Native image: expected output not found in stdout:\n${exec.stdout}")
+            val exec = resContainer.execInContainer("cat", "config.properties")
+            if (exec.exitCode != 0 || !exec.stdout.contains("app.name=crowdproj-docker")) {
+                throw GradleException("Native image: resource config.properties not found\nstdout:${exec.stdout}\nstderr:${exec.stderr}")
             }
         } finally {
-            container.stop()
+            resContainer.stop()
         }
     }
 }

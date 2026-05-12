@@ -1,3 +1,5 @@
+import org.gradle.plugin.compatibility.compatibility
+
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
@@ -33,6 +35,12 @@ gradlePlugin {
             tags.set(listOf("docker", "crowdproj", "kotlin", "multiplatform", "jvm", "native"))
             implementationClass = "com.crowdproj.plugins.docker.DockerPlugin"
             version = project.version
+
+            compatibility {
+                features {
+                    configurationCache = false
+                }
+            }
         }
     }
 }

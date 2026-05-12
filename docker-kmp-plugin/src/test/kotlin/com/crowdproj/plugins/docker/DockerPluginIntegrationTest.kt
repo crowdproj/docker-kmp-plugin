@@ -40,7 +40,7 @@ class DockerPluginIntegrationTest {
                 (this as org.gradle.jvm.tasks.Jar).manifest.attributes["Main-Class"] = "Main"
             }
             docker {
-                images.register("app").apply {
+                imageJvm("app") {
                     imageName = "crowdproj/itest-jvm"
                     dockerFile = "Dockerfile"
                 }

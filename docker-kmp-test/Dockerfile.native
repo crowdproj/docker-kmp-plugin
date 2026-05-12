@@ -1,6 +1,6 @@
 FROM ubuntu:24.04
 RUN apt-get update && apt-get install -y --no-install-recommends libc6 && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY docker-kmp-test.kexe ./
+COPY . ./
 RUN chmod +x docker-kmp-test.kexe
 ENTRYPOINT ["./docker-kmp-test.kexe"]

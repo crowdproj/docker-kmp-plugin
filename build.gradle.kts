@@ -5,8 +5,13 @@ repositories {
     mavenCentral()
 }
 
-tasks {
-    register("deploy") {
-        dependsOn(gradle.includedBuild("docker-kmp-plugin").task(":deploy"))
-    }
+tasks.register("test") {
+    group = "verification"
+    description = "Runs all tests including Docker image verification."
+    dependsOn(":docker-kmp-test:check")
+}
+
+tasks.register("deploy") {
+    dependsOn("test")
+    dependsOn(gradle.includedBuild("docker-kmp-plugin").task(":deploy"))
 }
