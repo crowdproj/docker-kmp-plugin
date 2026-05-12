@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContains
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -24,13 +25,13 @@ class DockerPluginTest {
         project.plugins.apply("com.crowdproj.plugins.docker")
 
         val ext = project.extensions.findByType(DockerExtension::class.java)!!
-        ext.images.register("test-app").apply {
+        ext.imageJvm("test-app") {
             imageName = "test/app"
         }
 
         assertTrue(ext.images.registeredNames.contains("test-app"))
         assertNotNull(ext.images.images["test-app"])
-        assertTrue(ext.images.images["test-app"]!!.imageName == "test/app")
+        assertEquals("test/app",ext.images.images["test-app"]!!.imageName)
     }
 
     @Test
@@ -86,7 +87,7 @@ class DockerPluginTest {
         project.plugins.apply("com.crowdproj.plugins.docker")
 
         val ext = project.extensions.findByType(DockerExtension::class.java)!!
-        ext.images.register("default-name").apply {
+        ext.imageJvm("default-name") {
             dockerFile = "Dockerfile"
         }
         assertTrue(ext.images.registeredNames.contains("default-name"))

@@ -15,6 +15,4 @@ class JvmDockerImageExtension : DockerImageExtension() {
     var mainClass: String? = null
 }
 
-class NativeDockerImageExtension : DockerImageExtension() {
-    val resources = mutableListOf<Any>()
-}
+class NativeDockerImageExtension : DockerImageExtension()
