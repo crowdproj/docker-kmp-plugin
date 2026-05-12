@@ -24,8 +24,8 @@ dependencies {
 }
 
 gradlePlugin {
-    website.set("https://github.com/crowdproj/docker-kmp")
-    vcsUrl.set("https://github.com/crowdproj/docker-kmp.git")
+    website.set("https://github.com/crowdproj/docker-kmp-plugin")
+    vcsUrl.set("https://github.com/crowdproj/docker-kmp-plugin.git")
     plugins {
         register("com.crowdproj.plugins.docker") {
             id = "com.crowdproj.plugins.docker"
