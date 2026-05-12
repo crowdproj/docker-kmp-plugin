@@ -2,6 +2,7 @@ package com.crowdproj.plugins.docker
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.StopExecutionException
@@ -12,6 +13,7 @@ import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
+@DisableCachingByDefault(because = "Builds a Docker image — depends on external Docker daemon state")
 abstract class DockerBuildTask : DefaultTask() {
 
     init {

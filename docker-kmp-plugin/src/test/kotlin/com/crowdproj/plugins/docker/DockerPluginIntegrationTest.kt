@@ -30,19 +30,21 @@ class DockerPluginIntegrationTest {
         buildFile.writeText("""
             plugins {
                 id("java")
-                id("com.gradleup.shadow") version "9.2.2"
                 id("com.crowdproj.plugins.docker")
+            }
+            java {
+                toolchain {
+                    languageVersion.set(JavaLanguageVersion.of(21))
+                }
             }
             repositories { mavenCentral() }
             group = "test"
             version = "1.0"
-            tasks.named("shadowJar") {
-                (this as org.gradle.jvm.tasks.Jar).manifest.attributes["Main-Class"] = "Main"
-            }
             docker {
                 imageJvm("app") {
                     imageName = "crowdproj/itest-jvm"
                     dockerFile = "Dockerfile"
+                    mainClass = "Main"
                 }
             }
         """.trimIndent())
@@ -70,7 +72,7 @@ class DockerPluginIntegrationTest {
             .withArguments("dockerBuildapp", "--info")
             .build()
 
-        assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+        assertTrue(result.output.contains("BUILD SUCCESSFUL"), "Gradle build failed. Last lines:\n${result.output.lines().takeLast(20).joinToString("\n")}")
 
         val runOutput = ProcessBuilder("docker", "run", "--rm", "crowdproj/itest-jvm:latest")
             .redirectErrorStream(true)
@@ -78,6 +80,6 @@ class DockerPluginIntegrationTest {
             .inputStream.bufferedReader().readText()
             .trim()
 
-        assertTrue(runOutput.contains("Hello from integration test!"))
+        assertTrue(runOutput.contains("Hello from integration test!"), "Docker run output: [$runOutput]")
     }
 }
