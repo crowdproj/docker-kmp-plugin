@@ -1,5 +1,5 @@
 [versions]
-crowdproj-docker = "0.1.0"
+crowdproj-docker = "0.1.2"
 kotlin = "2.3.20"
 kotlinx-serialization = "1.8.0"
 shadow = "9.4.1"
